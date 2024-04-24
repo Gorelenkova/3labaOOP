@@ -16,7 +16,7 @@ namespace _3labaOOP.Controllers
         public ActionResult<List<User>> GetUserAll()
         {
             var users = _context.Users.ToList();
-            return users;
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
@@ -35,6 +35,7 @@ namespace _3labaOOP.Controllers
         public ActionResult<string> CreateUser(string Name, string LastName)
         {
             var user = new User()
+
             {
                 Name = Name,
                 LastName = LastName,
@@ -53,6 +54,7 @@ namespace _3labaOOP.Controllers
             public string Name { get; set; }
             public string LastName { get; set; }
         }
+
         [HttpPut("PutUser")]
         public ActionResult<string> PutUser(int id, UpdatedUser updatedUser)
         {
@@ -66,6 +68,7 @@ namespace _3labaOOP.Controllers
             _context.SaveChanges();
             return Ok(user);
         }
+
         [HttpDelete("DeleteUser")]
         public ActionResult<string> DeleteUser(int id)
         {
