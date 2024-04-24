@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace _3labaOOP.Controllers
 {
+
+    [Route("api/[controller]")]
+    [ApiController]
     public class ProductController
     {
         private readonly ApplicationDbContext _context;
@@ -12,7 +15,7 @@ namespace _3labaOOP.Controllers
             this._context = _context;
         }
         [HttpPost("AddProduct")]
-        public ActionResult<string> AddProduct(ProductDto productDto)
+        public ActionResult<string> AddProduct(CreateProductDto productDto)
         {
             var product = new Product()
             {
@@ -25,13 +28,25 @@ namespace _3labaOOP.Controllers
             return "Добавлено в корзину";
         }
         [HttpGet("GetAllProduct")]
-        public ActionResult<List<Product>> GetAllProduct()
+        public ActionResult<List<ProductDto>> GetAllProduct()
         {
-            var product = _context.Products.ToList();
+            var product = _context.Products.Select(x => new ProductDto { Description = x.Description, Price = x.Price, Name = x.Name }).ToList();
+            return product;
+        }
+
+        [HttpGet("GetById")]
+        public ActionResult<ProductDto> GetProductById(int productid)
+        {
+            var product = _context.Products.Where(x => x.Id == productid)
+                                    .Select(x => new ProductDto { Id = x.Id, Description = x.Description, Name = x.Name, Price = x.Price })
+                                    .FirstOrDefault();
+
+
+
             return product;
         }
         [HttpPut("ChangeProduct")]
-        public ActionResult<string> ChangeProduct(ProductDto productdto, int id)
+        public ActionResult<string> ChangeProduct(CreateProductDto productdto, int id)
         {
             var product = _context.Products.Find(id);
             if (product == null)
@@ -48,7 +63,7 @@ namespace _3labaOOP.Controllers
         [HttpDelete("DeleteProduct")]
         public ActionResult<string> DeleteProduct(int id)
         {
-            var product = _context.Users.Find(id);
+            var product = _context.Products.Find(id);
             if (product == null)
             {
                 return "Такой продукт не найден";

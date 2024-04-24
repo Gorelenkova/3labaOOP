@@ -1,4 +1,5 @@
-﻿using _3labaOOP.Models;
+﻿using _3labaOOP.DTOs.UserDtos;
+using _3labaOOP.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _3labaOOP.Controllers
@@ -13,22 +14,22 @@ namespace _3labaOOP.Controllers
             this._context = _context;
         }
         [HttpGet("GetAll")]
-        public ActionResult<List<User>> GetUserAll()
+        public ActionResult<List<UserDto>> GetUserAll()
         {
-            var users = _context.Users.ToList();
+            var users = _context.Users.Select(x => new UserDto { Id = x.Id, Name = x.Name, LastName = x.LastName }).ToList();
             return Ok(users);
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<string> GetUserId(int id)
+        [HttpGet("GetById")]
+        public ActionResult<UserDto> GetUserById(int userid)
         {
-            var user = _context.Users.Find(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            var user = _context.Users.Where(x => x.Id == userid)
+                                    .Select(x => new UserDto { Id = x.Id, LastName = x.LastName, Name = x.Name })
+                                    .FirstOrDefault();
 
-            return Ok(user);
+
+
+            return user;
         }
 
         [HttpPost("AddUser")]
@@ -48,26 +49,21 @@ namespace _3labaOOP.Controllers
             return "Sce horosho";
 
         }
-
-        public class UpdatedUser
-        {
-            public string Name { get; set; }
-            public string LastName { get; set; }
-        }
-
-        [HttpPut("PutUser")]
-        public ActionResult<string> PutUser(int id, UpdatedUser updatedUser)
+        [HttpPut("ChangeUser")]
+        public ActionResult<string> ChangeUser(CreateUserDto userdto, int id)
         {
             var user = _context.Users.Find(id);
             if (user == null)
             {
-                return NotFound(id);
+                return "Такой юзер не найден";
             }
-            user.Name = updatedUser.Name;
-            user.LastName = updatedUser.LastName;
+            user.Name = userdto.Name;
+            user.LastName = userdto.LastName;
+
             _context.SaveChanges();
-            return Ok(user);
+            return "Юзер изменен";
         }
+
 
         [HttpDelete("DeleteUser")]
         public ActionResult<string> DeleteUser(int id)
@@ -75,11 +71,11 @@ namespace _3labaOOP.Controllers
             var user = _context.Users.Find(id);
             if (user == null)
             {
-                return NotFound(id);
+                return "Такой продукт не найден";
             }
             _context.Remove(user);
             _context.SaveChanges();
-            return Ok(user);
+            return "Продукт удален";
 
         }
     }

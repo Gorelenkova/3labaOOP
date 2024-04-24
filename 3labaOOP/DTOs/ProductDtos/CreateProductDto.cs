@@ -1,8 +1,8 @@
 ﻿namespace _3labaOOP.DTOs.ProductDtos
 {
-    public class ProductDto
+    public class CreateProductDto
     {
-        public int Id { get; set; }
+
         public string Name { get; set; }
         public int Price { get; set; }
 
