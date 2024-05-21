@@ -1,4 +1,5 @@
 using _3labaOOP;
+using _3labaOOP.Serves;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("MYDb")));
+
+builder.Services.AddScoped<IServiceUser, UserService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IServiceCart, CartService>();
 
 var app = builder.Build();
 

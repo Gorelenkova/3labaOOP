@@ -1,7 +1,6 @@
 ﻿using _3labaOOP.dto.CartDtos;
-using _3labaOOP.Models;
+using _3labaOOP.Serves;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace _3labaOOP.Controllers
 {
@@ -9,50 +8,23 @@ namespace _3labaOOP.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public CartController(ApplicationDbContext _context)
+        private readonly IServiceCart _serviceCart;
+        public CartController(IServiceCart _serviceCart)
         {
-            this._context = _context;
+            this._serviceCart = _serviceCart;
         }
         [HttpPost("AddInCart")]
         public ActionResult<string> AddInCart(int userid, int productid)
         {
 
-            var product = _context.Products.FirstOrDefault(x => x.Id == productid);
-            var user = _context.Users.Include(x => x.Cart).FirstOrDefault(x => x.Id == userid);
-            if (user == null || product == null)
-            {
-                return NotFound();
-            }
-
-            var cartProduct = new CartProduct()
-            {
-                Cart = user.Cart,
-                Product = product
-            };
-            _context.CartProducts.Add(cartProduct);
-            _context.SaveChanges();
+            _serviceCart.AddInCart(userid, productid);
             return Ok("Добавлено в корзину");
         }
         [HttpGet("GetOrderById")]
         public ActionResult<List<CartProductDto>> GetUsersOrderByUserId(int UserId)
         {
-            var user = _context.Users.Include(x => x.Cart).FirstOrDefault(x => x.Id == UserId);
 
-            var cartproduct = _context.CartProducts.Where(x => x.Cart == user.Cart).Select(x => x.ProductId).ToList();
-
-            var products = new List<Product>();
-
-            foreach (var p in cartproduct)
-            {
-                products.Add(_context.Products.FirstOrDefault(x => x.Id == p));
-            }
-
-
-            var productdto = products.Select(x => new CartProductDto { Name = x.Name, Description = x.Description, Price = x.Price }).ToList();
-
-            return productdto;
-
+            return _serviceCart.GetUsersOrderByUserId(UserId);
 
         }
 

@@ -1,5 +1,5 @@
 ﻿using _3labaOOP.DTOs.UserDtos;
-using _3labaOOP.Models;
+using _3labaOOP.Serves;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _3labaOOP.Controllers
@@ -8,75 +8,51 @@ namespace _3labaOOP.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public UserController(ApplicationDbContext _context)
+        private readonly IServiceUser _userServesecs;
+
+        public UserController(IServiceUser userServesecs)
         {
-            this._context = _context;
+            _userServesecs = userServesecs;
         }
+
         [HttpGet("GetAll")]
         public ActionResult<List<UserDto>> GetUserAll()
         {
-            var users = _context.Users.Select(x => new UserDto { Id = x.Id, Name = x.Name, LastName = x.LastName }).ToList();
+            var users = _userServesecs.GetUserAll();
             return Ok(users);
         }
 
         [HttpGet("GetById")]
         public ActionResult<UserDto> GetUserById(int userid)
         {
-            var user = _context.Users.Where(x => x.Id == userid)
-                                    .Select(x => new UserDto { Id = x.Id, LastName = x.LastName, Name = x.Name })
-                                    .FirstOrDefault();
+            var user = _userServesecs.GetUserById(userid);
 
-
-
-            return user;
+            return Ok(user);
         }
 
         [HttpPost("AddUser")]
         public ActionResult<string> CreateUser(string Name, string LastName)
         {
-            var user = new User()
+            _userServesecs.CreateUser(Name, LastName);
 
-            {
-                Name = Name,
-                LastName = LastName,
-                Cart = new Cart()
-            };
-
-            _context.Users.Add(user);
-            _context.SaveChanges();
-
-            return "Sce horosho";
+            return Ok();
 
         }
         [HttpPut("ChangeUser")]
         public ActionResult<string> ChangeUser(CreateUserDto userdto, int id)
         {
-            var user = _context.Users.Find(id);
-            if (user == null)
-            {
-                return "Такой юзер не найден";
-            }
-            user.Name = userdto.Name;
-            user.LastName = userdto.LastName;
-
-            _context.SaveChanges();
-            return "Юзер изменен";
+            _userServesecs.ChangeUser(userdto, id);
+            return Ok();
         }
 
 
         [HttpDelete("DeleteUser")]
         public ActionResult<string> DeleteUser(int id)
         {
-            var user = _context.Users.Find(id);
-            if (user == null)
-            {
-                return "Такой продукт не найден";
-            }
-            _context.Remove(user);
-            _context.SaveChanges();
-            return "Продукт удален";
+            _userServesecs.DeleteUser(id);
+            return Ok();
 
         }
+
     }
 }
