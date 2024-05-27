@@ -1,14 +1,13 @@
 ﻿using _3labaOOP.DTOs.ProductDtos;
-using Microsoft.AspNetCore.Mvc;
 
 namespace _3labaOOP.Serves
 {
     public interface IProductService
     {
-        ActionResult<string> AddProduct(CreateProductDto productDto);
-        ActionResult<List<ProductDto>> GetAllProduct();
-        ActionResult<ProductDto> GetProductById(int productid);
-        ActionResult<string> ChangeProduct(CreateProductDto productdto, int id);
-        ActionResult<string> DeleteProduct(int id);
+        string AddProduct(CreateProductDto productDto);
+        List<ProductDto> GetAllProduct();
+        ProductDto GetProductById(int productid);
+        string ChangeProduct(CreateProductDto productdto, int id);
+        string DeleteProduct(int id);
     }
 }

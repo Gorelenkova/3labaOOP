@@ -1,6 +1,5 @@
 ﻿using _3labaOOP.dto.CartDtos;
 using _3labaOOP.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace _3labaOOP.Serves
@@ -13,7 +12,7 @@ namespace _3labaOOP.Serves
         {
             this._context = _context;
         }
-        public ActionResult<string> AddInCart(int userid, int productid)
+        public string AddInCart(int userid, int productid)
         {
             var product = _context.Products.FirstOrDefault(x => x.Id == productid);
             var user = _context.Users.Include(x => x.Cart).FirstOrDefault(x => x.Id == userid);
@@ -32,7 +31,7 @@ namespace _3labaOOP.Serves
             return "Добавлено в корзину";
         }
 
-        public ActionResult<List<CartProductDto>> GetUsersOrderByUserId(int UserId)
+        public CartProductDto[] GetUsersOrderByUserId(int UserId)
         {
             var user = _context.Users.Include(x => x.Cart).FirstOrDefault(x => x.Id == UserId);
 
@@ -42,13 +41,14 @@ namespace _3labaOOP.Serves
 
             foreach (var p in cartproduct)
             {
-                products.Add(_context.Products.FirstOrDefault(x => x.Id == p));
+                var model = _context.Products.FirstOrDefault(x => x.Id == p);
+                if (model != null)
+                    products.Add(model);
             }
-
 
             var productdto = products.Select(x => new CartProductDto { Name = x.Name, Description = x.Description, Price = x.Price }).ToList();
 
-            return productdto;
+            return productdto.ToArray();
         }
     }
 }

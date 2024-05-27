@@ -13,6 +13,14 @@ namespace _3labaOOP.Controllers
         {
             this._serviceCart = _serviceCart;
         }
+
+        [HttpGet("GetOrderById")]
+        public ActionResult<CartProductDto[]> GetUsersOrderByUserId(int UserId)
+        {
+            var result = _serviceCart.GetUsersOrderByUserId(UserId);
+            return Ok(result);
+        }
+
         [HttpPost("AddInCart")]
         public ActionResult<string> AddInCart(int userid, int productid)
         {
@@ -20,13 +28,5 @@ namespace _3labaOOP.Controllers
             _serviceCart.AddInCart(userid, productid);
             return Ok("Добавлено в корзину");
         }
-        [HttpGet("GetOrderById")]
-        public ActionResult<List<CartProductDto>> GetUsersOrderByUserId(int UserId)
-        {
-
-            return _serviceCart.GetUsersOrderByUserId(UserId);
-
-        }
-
     }
 }

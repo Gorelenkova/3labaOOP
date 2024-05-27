@@ -1,6 +1,5 @@
 ﻿using _3labaOOP.DTOs.ProductDtos;
 using _3labaOOP.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace _3labaOOP.Serves
 {
@@ -13,7 +12,7 @@ namespace _3labaOOP.Serves
             _context = context;
 
         }
-        public ActionResult<string> AddProduct(CreateProductDto productDto)
+        public string AddProduct(CreateProductDto productDto)
         {
             var product = new Product()
             {
@@ -26,7 +25,7 @@ namespace _3labaOOP.Serves
             return "Добавлено в корзину";
         }
 
-        public ActionResult<string> ChangeProduct(CreateProductDto productdto, int id)
+        public string ChangeProduct(CreateProductDto productdto, int id)
         {
             var product = _context.Products.Find(id);
             if (product == null)
@@ -40,7 +39,7 @@ namespace _3labaOOP.Serves
             return "Продукт изменен";
         }
 
-        public ActionResult<string> DeleteProduct(int id)
+        public string DeleteProduct(int id)
         {
             var product = _context.Products.Find(id);
             if (product == null)
@@ -52,14 +51,14 @@ namespace _3labaOOP.Serves
             return "Продукт удален";
         }
 
-        public ActionResult<List<ProductDto>> GetAllProduct()
+        public List<ProductDto> GetAllProduct()
         {
             var product = _context.Products.Select(x => new ProductDto { Description = x.Description, Price = x.Price, Name = x.Name }).ToList();
             return product;
         }
 
 
-        public ActionResult<ProductDto> GetProductById(int productid)
+        public ProductDto GetProductById(int productid)
         {
             var product = _context.Products.Where(x => x.Id == productid)
                                     .Select(x => new ProductDto { Id = x.Id, Description = x.Description, Name = x.Name, Price = x.Price })
