@@ -15,14 +15,29 @@ namespace _3labaOOP.Serves
         }
         public ActionResult<string> Register(string name, string lastName, string login, string password)
         {
-            //var existingUser = _context.Users.Any(u => u.Login == login);
-            //if (existingUser != null)
-            //{
-            //    return "User with this login already exists.";
-            //}
 
             _usercontroller.CreateUser(name, lastName, login, password);
             return "User created successfully.";
+        }
+        public ActionResult<string> Login(string login, string password)
+        {
+            try
+            {
+                var user = _context.Users.FirstOrDefault(u => u.Login == login && u.Password == password);
+                if (user != null)
+                {
+                    return "Успешный вход";
+                }
+                else
+                {
+                    return "Неверные логин или пароль";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Логирование ошибки
+                return "Произошла внутренняя ошибка сервера";
+            }
         }
     }
 }

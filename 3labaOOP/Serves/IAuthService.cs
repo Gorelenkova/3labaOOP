@@ -5,6 +5,6 @@ namespace _3labaOOP.Serves
     public interface IAuthService
     {
         ActionResult<string> Register(string name, string lastName, string login, string password);
-
+        ActionResult<string> Login(string login, string password);
     }
 }
