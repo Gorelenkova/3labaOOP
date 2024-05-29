@@ -28,13 +28,20 @@ namespace _3labaOOP.Serves
         }
 
 
-        public ActionResult<string> CreateUser(string Name, string LastName)
+        public ActionResult<string> CreateUser(string Name, string LastName, string Login, string Password)
         {
+            var existingUser = _context.Users.FirstOrDefault(u => u.Login == Login);
+            if (existingUser != null)
+            {
+                return "Пользователь с таким логином уже существует";
+            }
             var user = new User()
 
             {
                 Name = Name,
                 LastName = LastName,
+                Login = Login,
+                Password = Password,
                 Cart = new Cart()
             };
 

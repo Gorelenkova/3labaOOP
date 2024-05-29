@@ -29,15 +29,15 @@ namespace _3labaOOP.Controllers
 
             return Ok(user);
         }
+        //теперь добавление юзера только через регестрацию
+        //[HttpPost("AddUser")]
+        //public ActionResult<string> CreateUser(string Name, string LastName, string Login, string Password)
+        //{
+        //    _userServesecs.CreateUser(Name, LastName, Login, Password);
 
-        [HttpPost("AddUser")]
-        public ActionResult<string> CreateUser(string Name, string LastName)
-        {
-            _userServesecs.CreateUser(Name, LastName);
+        //    return Ok();
 
-            return Ok();
-
-        }
+        //}
         [HttpPut("ChangeUser")]
         public ActionResult<string> ChangeUser(CreateUserDto userdto, int id)
         {
